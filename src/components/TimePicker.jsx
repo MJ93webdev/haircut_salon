@@ -1,40 +1,41 @@
-import { collection, getDocs, query, Timestamp, where } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
-import { db } from '../firebase';
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect } from "react"
 
 function TimePicker({setTime,time,freeAppointments}) {
 
-  const handleSelectTime = (time)=> {
-    setTime(freeAppointments.filter(app => app === time))
+
+  useEffect(()=>console.log("fap: ",freeAppointments),[])
+
+  const handleSelectTime = (selectedTime)=> {
+    const t = freeAppointments.find(app =>
+  (makeTime(app.fromTime,app.toTime) === selectedTime))
+    setTime(t)
   }
 
+const makeTime = (fromTime,toTime)=>{
+  const key = fromTime.getHours().toString() +
+  fromTime.getMinutes().toString() + 
+  toTime.getHours().toString() +
+  toTime.getMinutes().toString()
 
-  return (
-    <div>
-          <h4 className="text-[#1d232a] font-bold my-6">{time ? "Vaš Termin" : "Slobodni termini"}</h4>
-          <div className='flex flex-wrap gap-2 my-8'>
-            {
-              time ?
-              time.map(appointment => (
-                  <div key={uuidv4()} className='hover:shadow shadow-[#1d232a] cursor-pointer w-max p-4 border rounded-xl text-black'>
-                  from: {appointment.fromTime.getHours()} : {appointment.fromTime.getMinutes()}
-                   to: {appointment.toTime.getHours()} : {appointment.toTime.getMinutes()}
-                  </div>
-              ))
-              :
-              freeAppointments && freeAppointments.map(appointment => {
-                return(
-                <div onClick={(e)=>handleSelectTime(appointment)} key={uuidv4()} className='hover:shadow shadow-[#1d232a] cursor-pointer w-max p-4 border rounded-xl text-black'>
-                  from: {appointment.fromTime.getHours()} : {appointment.fromTime.getMinutes()}
-                   to: {appointment.toTime.getHours()} : {appointment.toTime.getMinutes()}
-                  </div>
-              )
-              })
-            }
-        </div>
-    </div>
-  )
+  return(key);
+}
+
+return(
+  freeAppointments ? <div>
+    <h4 className="text-[#1d232a] font-bold my-6">Slobodni termini</h4>
+    <select className="select" defaultValue={"select time"} onChange={(e)=>handleSelectTime(e.target.value)}>
+      {
+        freeAppointments.map(app=>(
+          <option value={makeTime(app.fromTime, app.toTime)}
+          key={makeTime(app.fromTime,app.toTime)}
+          >{app.fromTime.getHours()}:{app.fromTime.getMinutes()}-{app.toTime.getHours()}:{app.toTime.getMinutes()}</option>
+        ))
+      }
+    </select>
+  </div>
+  : <h4 className="text-[#1d232a] font-bold my-6">No free appointments...</h4>
+)
+
 }
 
 export default TimePicker
