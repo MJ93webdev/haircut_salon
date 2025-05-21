@@ -1,23 +1,24 @@
 import {collection, getDocs, query, Timestamp, where } from "firebase/firestore";
 import { db } from "../firebase";
 
-export const createAppTime = async (date, shiftStart, shiftEnd, appDuration,freeTime)=>{
+export const createAppTime = async (date, shiftStart, shiftEnd, appDuration,freeTime,maxAppointments)=>{
     // fetch appointments from db 
     console.log("given date: ",date)
     const appDocCollection = collection(db,"appointments");
-    const appQuery = query(appDocCollection,where("time", ">=", Timestamp.fromDate(date)));
+    const appQuery = query(appDocCollection,where("fromTimeDate", ">=", Timestamp.fromDate(date)));
     const res = await getDocs(appQuery);
-    const appForDay = []
+    const prevApps = []
     if(res.docs.length > 0){
       res.docs.forEach(doc => {
-        console.log(doc.data().time);
-        const newDate = doc.data().time.toDate();
+        console.log(doc.data().fromTimeDate);
+        const newDate = doc.data().fromTimeDate.toDate();
         if(newDate.getDay() === date.getDay()){
-          appForDay.push(doc.data().time);
+          prevApps.push(doc.data().fromTimeDate);
         }
       })
-      console.log(appForDay)
+      console.log("prevApps:",prevApps)
     }
+    if(prevApps.length > maxAppointments) return;
 
 
     //counts when to add new appointment window(set by appDuration) 
@@ -26,8 +27,6 @@ export const createAppTime = async (date, shiftStart, shiftEnd, appDuration,free
     let freeApp = [];
     // counts time from beggining to the end of shift, i represents minutes passed.
     for(let i=shiftStart; i <= shiftEnd; i++){
-    
-      
       //check if there is an appointment at the given date
       //create appointment
       if((appCounter === appDuration + freeTime || i === shiftStart) && !(i >= shiftEnd - appDuration )){
@@ -37,12 +36,14 @@ export const createAppTime = async (date, shiftStart, shiftEnd, appDuration,free
         date.setHours(hours);
         date.setMinutes(Math.round(minutes));
         const newDate = new Date(date);
-        if(appForDay.length > 0){
-          appForDay.forEach(appointment => {
-            if(newDate.getTime() !== appointment.toDate().getTime()){
+        console.log("new date: ", newDate.getTime());
+        
+        if(prevApps.length > 0){
+          console.log("prev app: ", prevApps[0].toDate().getTime());
+            if(!prevApps.some(prevApp => prevApp.toDate().getTime() === newDate.getTime())){
+              console.log("it doesn't exist!!!")
               freeApp.push(parseTime(newDate,appDuration));
             }
-          })
         }else{
           freeApp.push(parseTime(newDate,appDuration))
         }

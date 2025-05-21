@@ -7,6 +7,8 @@ import Login from "./pages/Login"
 import CreateAppointment from "./pages/CreateAppointment"
 import ChooseDate from "./pages/ChooseTimeDate"
 import Checkout from "./pages/Checkout"
+import AppointmentFinished from "./pages/AppointmentFinished"
+import AdminDashboard from "./pages/AdminDashboard"
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/create-appointment" element={<CreateAppointment />} />
         <Route path="/create-appointment/choose-time-date" element={<ChooseDate />} />
         <Route path="/create-appointment/checkout" element={<Checkout />} />
+        <Route path="/create-appointment/finished" element={<AppointmentFinished />} />
+        <Route path="/admin_dashboard" element={<AdminDashboard />} />
       </Routes>
       <Footer />
     </div>
