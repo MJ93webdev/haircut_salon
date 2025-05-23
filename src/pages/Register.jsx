@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { auth, db } from "../firebase"
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,9 @@ function Register() {
   const [formData, setFormData] = useState({
       name: "",
       email: "",
-      password: ""
+      password: "",
+      repeatPassword: "",
+      phone: ""
   });
 
   const [error, setError] = useState("Internal Error!");
@@ -27,18 +29,25 @@ function Register() {
 
   const signUp = async ()=>{
     const newUser = await createUserWithEmailAndPassword(auth,formData.email,formData.password);
+    await updateProfile(newUser.user,formData.name)
     const usersCollection = doc(db,"users",newUser.user.uid);
     await setDoc(usersCollection,{
       name: formData.name,
-      email: formData.email
+      email: formData.email,
+      phone: formData.phone
     });
 
   } 
 
   const handleRegister = ()=>{
     try{
-      signUp();
-      navigate("/");
+      if(formData.password === formData.repeatPassword){
+        signUp();
+        navigate("/");
+      }else{
+        console.log("ERROR!")
+        console.log("Password not repeated correctly!")
+      }
     }catch(error){
       console.log("error: ",error.message)
     }
@@ -57,7 +66,13 @@ function Register() {
 
         <label className="label">Password</label>
         <input name="password" onChange={e=>handleChange(e)} value={formData.password} type="password" className="input" placeholder="Password" />
+        
+        <label className="label">Repeat Password</label>
+        <input name="repeatPassword" onChange={e=>handleChange(e)} value={formData.repeatPassword} type="password" className="input" placeholder="Repeat Password" />
 
+        <label className="label">Phone</label>
+        <input name="phone" onChange={e=>handleChange(e)} value={formData.phone} type="tel" className="input" placeholder="Phone" />
+        
         <button onClick={handleRegister} className="btn btn-neutral mt-4">Register</button>
       </fieldset>
     </div>

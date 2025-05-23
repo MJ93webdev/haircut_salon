@@ -9,6 +9,8 @@ import ChooseDate from "./pages/ChooseTimeDate"
 import Checkout from "./pages/Checkout"
 import AppointmentFinished from "./pages/AppointmentFinished"
 import AdminDashboard from "./pages/AdminDashboard"
+import Settings from "./pages/Settings"
+import AdminAppointments from "./pages/AdminAppointments"
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/create-appointment/checkout" element={<Checkout />} />
         <Route path="/create-appointment/finished" element={<AppointmentFinished />} />
         <Route path="/admin_dashboard" element={<AdminDashboard />} />
+        <Route path="/admin_dashboard/settings" element={<Settings />} />
+        <Route path="/admin_dashboard/appointments" element={<AdminAppointments />} />
       </Routes>
       <Footer />
     </div>
