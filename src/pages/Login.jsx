@@ -1,10 +1,13 @@
-import { useState } from "react"
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { useContext, useState } from "react"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "../firebase"
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function Login() {
+
+const { currentUser } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
       email: "",
@@ -24,13 +27,9 @@ function Login() {
     }));
   }
 
-  const signUp = async ()=>{
-    const newUser = await signInWithEmailAndPassword(auth,formData.email,formData.password);
-  } 
-
-  const handleLogin = ()=>{
+  const handleLogin = async ()=>{
     try{
-      signUp();
+      await signInWithEmailAndPassword(auth,formData.email,formData.password);
       navigate("/");
     }catch(error){
       console.log("error: ",error.message)

@@ -1,4 +1,5 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom"
+import { AuthProvider } from "./context/AuthContext"
 import Home from "./pages/Home"
 import Register from "./pages/Register"
 import Navbar from "./components/Navbar"
@@ -15,6 +16,7 @@ import AdminAppointments from "./pages/AdminAppointments"
 function App() {
   return (
 
+  <AuthProvider>
     <BrowserRouter>
     <div className="grid min-h-screen grid-rows-[auto_1fr_auto] bg-[#1d232a]">
       <Navbar />
@@ -33,6 +35,7 @@ function App() {
       <Footer />
     </div>
     </BrowserRouter>
+  </AuthProvider>
   )
 }
 

@@ -23,8 +23,8 @@ useEffect(()=>{
 
   return (
     <div className="text-center mt-24">
-        <h2 className="text-xl md:text-2xl lg:text-3xl mb-2">AppointmentFinished!</h2>
-        <p className="md:text-xl lg:text-2xl">Redirect in {seconds}s</p>
+        <h2 className="text-xl md:text-2xl lg:text-3xl mb-2">Zakazivanje Završeno!</h2>
+        <p className="md:text-xl lg:text-2xl">Vraćanje na početnu stranicu za {seconds}s</p>
     </div>
   )
 }
