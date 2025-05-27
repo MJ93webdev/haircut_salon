@@ -2,7 +2,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import Error from "../components/Error";
+import ErrorAlert from "../components/ErrorAlert"
 
 export const AuthContext = createContext();
 
@@ -26,7 +26,7 @@ export function AuthProvider({children}){
                         console.log("ERROR!")
                         console.log("code: ",error.code)
                         console.log("code: ",error.message)
-                        Error(error);
+                        setError(error)
                     }
                 };
                 fetchUser();
@@ -45,6 +45,7 @@ export function AuthProvider({children}){
 return(
     <AuthContext.Provider value={{ currentUser }}>
         {!loading && children}
+        {error && <ErrorAlert msg={error} />}
     </AuthContext.Provider>
 )
 

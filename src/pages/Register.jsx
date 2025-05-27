@@ -14,7 +14,7 @@ function Register() {
       phone: ""
   });
 
-  const [error, setError] = useState("Internal Error!");
+  const [error, setError] = useState(null);
   
 
   const navigate = useNavigate();
